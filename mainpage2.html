@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <h1>SOLAR PANEL POWER (mW)</h1>
+  <head>
+    <script type="text/javascript" src="smoothie.js"></script>
+    <script type="text/javascript">
+var data = new TimeSeries();
+var adc = 0;
+var prevadc = 0;
+  setInterval(function() {
+	  GetADC();
+	}, 50);
+  
+	function GetADC() {
+    prevadc = adc;
+	  var xhttp = new XMLHttpRequest();
+	  xhttp.onreadystatechange = function() {
+	    if (this.readyState == 4 && this.status == 200) {
+		adc = Number(this.responseText);
+    if (adc == -1) {
+      adc = prevadc;
+    }
+    console.log(adc)
+	      	/*gauges.forEach(function (gauge) {			
+			console.log(adc)
+	    		gauge.write(adc);
+	  		});*/
+	    }
+	  };
+    data.append(new Date().getTime(), adc);
+	  xhttp.open("GET", "/getADC", false);
+	  xhttp.send();
+	}
+      /*setInterval(function() {
+        random.append(new Date().getTime(), Math.random() * 10000);
+      }, 500);*/
+      /*setInterval(function() {
+        random.append(new Date().getTime(), 5);
+      }, 500);*/
+      function createTimeline() {
+        var chart = new SmoothieChart();
+        chart.addTimeSeries(data, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+        chart.streamTo(document.getElementById("chart"), 50);
+      }
+    </script>
+  </head>
+  <body onload="createTimeline()">
+
+    <canvas id="chart" width="400" height="150"></canvas>
+
+  </body>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial;}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+</style>
+</head>
+<body>
+
+<h2>Curious?</h2>
+<p>Click/tap below to find out more!</p>
+
+<div class="tab">
+  <button class="tablinks" onclick="openCity(event, 'Green')">Green lights?</button>
+  <button class="tablinks" onclick="openCity(event, 'Red')">Red lights?</button>
+  <button class="tablinks" onclick="openCity(event, 'Blue')">Blue lights?</button>
+  <button class="tablinks" onclick="openCity(event, 'Info4')">How do solar panels work?</button>
+  <button class="tablinks" onclick="openCity(event, 'Info5')">What is the issue with coal and gas?</button>
+  <button class="tablinks" onclick="openCity(event, 'Info6')">Are solar panels the only source of renewable energy?</button>
+</div>
+
+<div id="Green" class="tabcontent">
+  <h3>What do the green lights mean?</h3>
+  <p>The green lights show what happens during a sunny day. When the sun is shining, solar panels provide most of the power to a home/city. In 2019, solar energy
+    provided 6% of Australia's energy.
+  </p>
+</div>
+
+<div id="Red" class="tabcontent">
+  <h3>What do the red lights mean?</h3>
+  <p>The red lights show what happens at night. When the sun is down, coal- and gas-fired power plants provide most of the electricity to homes and cities.
+    One of the main challenges that renewable energy has yet to properly overcome is what is known as the "Duck Curve" (Google it!). This is where solar energy drops off sharply in the evening,
+    when most people are at home cooking dinner and watching TV. Improved battery storage systems can help solar energy to overcome this hurdle.
+  </p> 
+</div>
+
+<div id="Blue" class="tabcontent">
+  <h3>What do the blue lights mean?</h3>
+  <p>The blue lights show what happen at sunrise/sunset and on cloudy days. At these times, solar panels don't provide enough electricity to power a home on their own.
+    Solar power will combine with the grid to power homes together, with the grid picking up the slack when solar power drops.
+  </p>
+</div>
+
+<div id="Info4" class="tabcontent">
+  <h3>How do solar panels work?</h3>
+  <p>Solar panels generate electricity through what is known as the <b>photoelectric effect</b> (google it!). Essentially, as light hits the solar panel, the energy from the light
+    is transferred to the electrons within the solar cell, generating electricity. Solar panels don't work as well when it is cloudy, and they barely generate any electricity at all at
+    night time.
+  </p>
+</div>
+
+<div id="Info5" class="tabcontent">
+  <h3>What is the issue with coal and oil?</h3>
+  <p>Coal and oil are called <b>fossil fuels</b> because they are made from the remains of animals and plants that have been buried for millions of years. They are not <b>renewable</b> because
+    they take a very long time to replenish. This means that we will eventually run out of them. Furthermore, burning coal and oil release a large amount of
+    <b>carbon dioxide</b>, leading to the <b>the enhanced greenhouse effect</b>, also known as global warming. Global warming has a huge ripple effect on our environment,
+    causing the deaths and extinctions of many animal species and leading to an increase in extreme weather events, such as bushfires, hurricanes, and tsunamis.
+  </p>
+</div>
+
+<div id="Info6" class="tabcontent">
+  <h3>Are solar panels the only source of renewable energy?</h3>
+  <p>No, there are many types of renewable energy. Some of the most widely used sources include: wind energy (wind turbines), hydro energy (waterfalls and dams),
+    geothermal energy (heat from the Earth's core), and tidal energy (energy from the waves). All of these sources of energy will not run out (at least not for a very very very long time)
+    and do not release carbon dioxide.
+  </p>
+</div>
+
+<script>
+function openCity(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+
+<button id="quiz1" onclick="document.location='quiz1.html'">Quiz 1 (Basic)</button>
+<style>
+  
+  body{
+	font-size: 20px;
+	font-family: sans-serif;
+	color: #333;
+}
+.question{
+	font-weight: 600;
+}
+.answers {
+  margin-bottom: 20px;
+}
+.answers label{
+  display: block;
+}
+#quiz1{
+  position:relative; top:10px;
+	font-family: sans-serif;
+	font-size: 20px;
+	background-color: #279;
+	color: #fff;
+	border: 0px;
+	border-radius: 3px;
+	padding: 20px;
+	cursor: pointer;
+	margin-bottom: 20px;
+}
+#quiz1:hover{
+	background-color: #38a;
+}
+}
+
+</style>
+<button id="quiz2" onclick="document.location='quiz2.html'">Quiz 2 (Intermediate)</button>
+<style>
+  
+  body{
+	font-size: 20px;
+	font-family: sans-serif;
+	color: #333;
+}
+.question{
+	font-weight: 600;
+}
+.answers {
+  margin-bottom: 20px;
+}
+.answers label{
+  display: block;
+}
+#quiz2{
+  position:relative; top:10px;
+	font-family: sans-serif;
+	font-size: 20px;
+	background-color: #279;
+	color: #fff;
+	border: 0px;
+	border-radius: 3px;
+	padding: 20px;
+	cursor: pointer;
+	margin-bottom: 20px;
+}
+#quiz2:hover{
+	background-color: #38a;
+}
+}
+
+</style>
+<button id="quiz3" onclick="document.location='quiz3.html'">Quiz 3 (Advanced)</button>
+<style>
+  
+  body{
+	font-size: 20px;
+	font-family: sans-serif;
+	color: #333;
+}
+.question{
+	font-weight: 600;
+}
+.answers {
+  margin-bottom: 20px;
+}
+.answers label{
+  display: block;
+}
+#quiz3{
+  position:relative; top:10px;
+	font-family: sans-serif;
+	font-size: 20px;
+	background-color: #279;
+	color: #fff;
+	border: 0px;
+	border-radius: 3px;
+	padding: 20px;
+	cursor: pointer;
+	margin-bottom: 20px;
+}
+#quiz3:hover{
+	background-color: #38a;
+}
+}
+
+</style>
+</body>
+</html> 

@@ -1,0 +1,196 @@
+<div id="quiz"></div>
+<button id="submit">Submit Quiz</button>
+<div id="results"></div>
+<button id="main" onclick="document.location='mainpage2.html'">Back to main page</button>
+
+<style>
+  body{
+	font-size: 20px;
+	font-family: sans-serif;
+	color: #333;
+}
+.question{
+	font-weight: 600;
+}
+.answers {
+  margin-bottom: 20px;
+}
+.answers label{
+  display: block;
+}
+#main{
+	font-family: sans-serif;
+	font-size: 20px;
+	background-color: #279;
+	color: #fff;
+	border: 0px;
+	border-radius: 3px;
+	padding: 20px;
+	cursor: pointer;
+	margin-bottom: 20px;
+}
+#main:hover{
+	background-color: #38a;
+}
+#submit{
+	font-family: sans-serif;
+	font-size: 20px;
+	background-color: #279;
+	color: #fff;
+	border: 0px;
+	border-radius: 3px;
+	padding: 20px;
+	cursor: pointer;
+	margin-bottom: 20px;
+}
+#submit:hover{
+	background-color: #38a;
+}
+</style>
+
+
+<script>
+(function(){
+  function buildQuiz(){
+    // variable to store the HTML output
+    const output = [];
+
+    // for each question...
+    myQuestions.forEach(
+      (currentQuestion, questionNumber) => {
+
+        // variable to store the list of possible answers
+        const answers = [];
+
+        // and for each available answer...
+        for(letter in currentQuestion.answers){
+
+          // ...add an HTML radio button
+          answers.push(
+            `<label>
+              <input type="radio" name="question${questionNumber}" value="${letter}">
+              ${letter} :
+              ${currentQuestion.answers[letter]}
+            </label>`
+          );
+        }
+
+        // add this question and its answers to the output
+        output.push(
+          `<div class="question"> ${currentQuestion.question} </div>
+          <div class="answers"> ${answers.join('')} </div>`
+        );
+      }
+    );
+
+    // finally combine our output list into one string of HTML and put it on the page
+    quizContainer.innerHTML = output.join('');
+  }
+
+  function showResults(){
+
+    // gather answer containers from our quiz
+    const answerContainers = quizContainer.querySelectorAll('.answers');
+
+    // keep track of user's answers
+    let numCorrect = 0;
+
+    // for each question...
+    myQuestions.forEach( (currentQuestion, questionNumber) => {
+
+      // find selected answer
+      const answerContainer = answerContainers[questionNumber];
+      const selector = `input[name=question${questionNumber}]:checked`;
+      const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+      // if answer is correct
+      if(userAnswer === currentQuestion.correctAnswer){
+        // add to the number of correct answers
+        numCorrect++;
+
+        // color the answers green
+        answerContainers[questionNumber].style.color = 'lightgreen';
+      }
+      // if answer is wrong or blank
+      else{
+        // color the answers red
+        answerContainers[questionNumber].style.color = 'red';
+      }
+    });
+
+    // show number of correct answers out of total
+    //resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
+    if (numCorrect < 4) {
+      resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length} 
+      Better luck next time! Refresh this page to try again. Try reviewing some of the tabs on the main page to help you learn!`;
+    }
+    else if (numCorrect == 4) {
+      resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length} 
+      Nice work! Almost perfect, try again?`;
+    }
+    else if (numCorrect == 5) {
+      resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length} 
+      100%! Well done, maybe it's time to try a harder quiz!`;
+    }
+  }
+
+  const quizContainer = document.getElementById('quiz');
+  const resultsContainer = document.getElementById('results');
+  const submitButton = document.getElementById('submit');
+  const myQuestions = [
+    {
+      question: "Can solar panels power a home 24 hours a day?",
+      answers: {
+        a: "Yes", 
+        b: "No",
+      },
+      correctAnswer: "b"
+    },
+    {
+      question: "When do solar panels output the most power?",
+      answers: {
+        a: "Morning",
+        b: "Midday",
+        c: "Evening"
+      },
+      correctAnswer: "b"
+    },
+    {
+      question: "When do people use the most electricity?",
+      answers: {
+        a: "Morning",
+        b: "Midday",
+        c: "Afternoon",
+        d: "Evening"
+      },
+      correctAnswer: "d"
+    },
+    {
+      question: "How do solar panels generate electricity?",
+      answers: {
+        a: "Heat",
+        b: "Wind",
+        c: "Light",
+        d: "Radio waves"
+      },
+      correctAnswer: "c"
+    },
+    {
+      question: "What provides most of the electricity at night time?",
+      answers: {
+        a: "Coal and gas power plants", 
+        b: "Battery storage",
+        c: "Wind turbines",
+        d: "Other countries"
+      },
+      correctAnswer: "a"
+    }
+  ];
+
+  // Kick things off
+  buildQuiz();
+
+  // Event listeners
+  submitButton.addEventListener('click', showResults);
+})();
+</script>

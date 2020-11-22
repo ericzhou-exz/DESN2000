@@ -1,0 +1,198 @@
+<div id="quiz"></div>
+<button id="submit">Submit Quiz</button>
+<div id="results"></div>
+<button id="main" onclick="document.location='mainpage2.html'">Back to main page</button>
+
+<style>
+  body{
+	font-size: 20px;
+	font-family: sans-serif;
+	color: #333;
+}
+.question{
+	font-weight: 600;
+}
+.answers {
+  margin-bottom: 20px;
+}
+.answers label{
+  display: block;
+}
+#main{
+	font-family: sans-serif;
+	font-size: 20px;
+	background-color: #279;
+	color: #fff;
+	border: 0px;
+	border-radius: 3px;
+	padding: 20px;
+	cursor: pointer;
+	margin-bottom: 20px;
+}
+#main:hover{
+	background-color: #38a;
+}
+#submit{
+	font-family: sans-serif;
+	font-size: 20px;
+	background-color: #279;
+	color: #fff;
+	border: 0px;
+	border-radius: 3px;
+	padding: 20px;
+	cursor: pointer;
+	margin-bottom: 20px;
+}
+#submit:hover{
+	background-color: #38a;
+}
+</style>
+
+
+<script>
+(function(){
+  function buildQuiz(){
+    // variable to store the HTML output
+    const output = [];
+
+    // for each question...
+    myQuestions.forEach(
+      (currentQuestion, questionNumber) => {
+
+        // variable to store the list of possible answers
+        const answers = [];
+
+        // and for each available answer...
+        for(letter in currentQuestion.answers){
+
+          // ...add an HTML radio button
+          answers.push(
+            `<label>
+              <input type="radio" name="question${questionNumber}" value="${letter}">
+              ${letter} :
+              ${currentQuestion.answers[letter]}
+            </label>`
+          );
+        }
+
+        // add this question and its answers to the output
+        output.push(
+          `<div class="question"> ${currentQuestion.question} </div>
+          <div class="answers"> ${answers.join('')} </div>`
+        );
+      }
+    );
+
+    // finally combine our output list into one string of HTML and put it on the page
+    quizContainer.innerHTML = output.join('');
+  }
+
+  function showResults(){
+
+    // gather answer containers from our quiz
+    const answerContainers = quizContainer.querySelectorAll('.answers');
+
+    // keep track of user's answers
+    let numCorrect = 0;
+
+    // for each question...
+    myQuestions.forEach( (currentQuestion, questionNumber) => {
+
+      // find selected answer
+      const answerContainer = answerContainers[questionNumber];
+      const selector = `input[name=question${questionNumber}]:checked`;
+      const userAnswer = (answerContainer.querySelector(selector) || {}).value;
+
+      // if answer is correct
+      if(userAnswer === currentQuestion.correctAnswer){
+        // add to the number of correct answers
+        numCorrect++;
+
+        // color the answers green
+        answerContainers[questionNumber].style.color = 'lightgreen';
+      }
+      // if answer is wrong or blank
+      else{
+        // color the answers red
+        answerContainers[questionNumber].style.color = 'red';
+      }
+    });
+
+    // show number of correct answers out of total
+    //resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length}`;
+    if (numCorrect < 4) {
+      resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length} 
+      Better luck next time! Refresh this page to try again. Try reviewing some of the tabs on the main page to help you learn!`;
+    }
+    else if (numCorrect == 4) {
+      resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length} 
+      Nice work! Almost perfect, try again?`;
+    }
+    else if (numCorrect == 5) {
+      resultsContainer.innerHTML = `${numCorrect} out of ${myQuestions.length} 
+      100%! Well done, maybe it's time to try a harder quiz!`;
+    }
+  }
+
+  const quizContainer = document.getElementById('quiz');
+  const resultsContainer = document.getElementById('results');
+  const submitButton = document.getElementById('submit');
+  const myQuestions = [
+    {
+      question: "Do solar panels work when it is cloudy?",
+      answers: {
+        a: "Yes, they work as normal", 
+        b: "Yes, but they generate less electricity than when it is sunny",
+        c: "No, they shut off automatically",
+      },
+      correctAnswer: "b"
+    },
+    {
+      question: "How are coal and oil formed?",
+      answers: {
+        a: "Long-buried animal and plant remains",
+        b: "Formed when the Earth was formed",
+        c: "Formed by burning wood",
+        d: "Parts of the Earth's core that have cooled"
+      },
+      correctAnswer: "a"
+    },
+    {
+      question: "How long does coal take to form?",
+      answers: {
+        a: "A few years",
+        b: "Hundreds of years",
+        c: "Thousands of years",
+        d: "Millions of years"
+      },
+      correctAnswer: "d"
+    },
+    {
+      question: "What is the technical term for how solar panels generate electricity?",
+      answers: {
+        a: "Photon effect",
+        b: "Photosynthesis",
+        c: "Light induced superconductivity",
+        d: "Photoelectric effect"
+      },
+      correctAnswer: "d"
+    },
+    {
+      question: "Which of the following is NOT a fossil fuel?",
+      answers: {
+        a: "Natural gas", 
+        b: "Oil",
+        c: "Geothermal energy",
+        d: "Coal"
+      },
+      correctAnswer: "c"
+    }
+  ];
+
+  // Kick things off
+  buildQuiz();
+
+  // Event listeners
+  submitButton.addEventListener('click', showResults);
+})();
+</script>
